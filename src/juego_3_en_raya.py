@@ -7,7 +7,7 @@ Método que comprueba que un movimiento de un jugador es válido
  * movimientos_otro_jugador: listado con las celdas ocupadas por el otro
 jugador.
 """
-def movimiento_valido(x, y, movimientos_otro_jugador,n):
+def movimiento_valido(x, y, movimientos_otro_jugador):
     if x > n or y > n:
         return False
     if x in movimientos_otro_jugador:
@@ -32,6 +32,21 @@ def generar_tablero(n, movimientos_jugadores):
         tablero.append(fila)
     return tablero
 
+def jugada_ganadora(movimientos_jugador):
+    """
+    Método que permite determinar si los movimientos de un jugador le
+    permite ganar una partida.
+    Parámetros:
+    * movimientos_jugador: dict con el conjunto de movimientos de un
+    jugador
+    """
+    #Comprobamos si hay 3 fichas en una fila
+    for fila in movimientos_jugador:
+        movimientos_columna = movimientos_jugador[fila]
+        if len(movimientos_columna)==3:
+            return True
+    return False
+
 #t= generar_tablero(n, movimientos_jugadores)
 #print(t, len(t))
 
@@ -45,13 +60,13 @@ def test_generar_tablero():
     for f in t:
         assert len(f) == n
 
-def test_movimiento_columna_fuera_tablero(n):
+def test_movimiento_columna_fuera_tablero():
     movimientos_otro_jugador={}
     x= 1
     y= n+1
     assert False == movimiento_valido(x,y,movimientos_otro_jugador)
 
-def test_movimiento_fila_y_columna_fuera_tablero(n):
+def test_movimiento_fila_y_columna_fuera_tablero():
     movimientos_otro_jugador={}
     x= n+1
     y= n+1
@@ -62,3 +77,10 @@ def test_movimiento_incorrecto():
     x= 2
     y= 3
     assert False == movimiento_valido(x,y,movimientos_otro_jugador)
+
+def test_no_ganador():
+    movimientos_jugador={2:[2,3]}
+    assert False == jugada_ganadora(movimientos_jugador)
+def test_ganador():
+    movimientos_jugador={2:[1,2,3]}
+    assert True == jugada_ganadora(movimientos_jugador)
